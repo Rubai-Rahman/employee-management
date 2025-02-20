@@ -1,3 +1,4 @@
+import { EmployeeFormDialog } from '@/components/employee/EmployeeFormDialog';
 import EmployeeTableView from '@/components/employee/EmployeeTableView';
 import Filters from '@/components/shared/Filters';
 import SearchBar from '@/components/shared/SearchBar';
@@ -9,6 +10,7 @@ export default function TablePage() {
         <SearchBar />
         <Filters />
       </div>
+      <EmployeeFormDialog />
       <EmployeeTableView />
     </div>
   );
