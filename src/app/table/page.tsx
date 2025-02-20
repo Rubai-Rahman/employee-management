@@ -1,6 +1,6 @@
-import EmployeeTableView from '@/components/EmployeeTableView';
-import Filters from '@/components/Filters';
-import SearchBar from '@/components/SearchBar';
+import EmployeeTableView from '@/components/employee/EmployeeTableView';
+import Filters from '@/components/shared/Filters';
+import SearchBar from '@/components/shared/SearchBar';
 
 export default function TablePage() {
   return (

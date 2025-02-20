@@ -1,7 +1,6 @@
-import EmployeeCardView from "@/components/EmployeeCardView";
-import Filters from "@/components/Filters";
-import SearchBar from "@/components/SearchBar";
-
+import EmployeeCardView from '@/components/employee/EmployeeCardView';
+import Filters from '@/components/shared/Filters';
+import SearchBar from '@/components/shared/SearchBar';
 
 export default function Home() {
   return (
