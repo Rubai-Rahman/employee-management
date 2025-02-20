@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { dummyEmployees } from './EmployeeCardView';
+import { Pencil, Trash2 } from 'lucide-react';
 
 export default function EmployeeTableView() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,10 +60,10 @@ export default function EmployeeTableView() {
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
-                    Edit
+                    <Pencil />
                   </Button>
                   <Button variant="destructive" size="sm">
-                    Delete
+                    <Trash2 />
                   </Button>
                 </div>
               </TableCell>
