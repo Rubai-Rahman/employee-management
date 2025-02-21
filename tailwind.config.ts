@@ -10,6 +10,19 @@ export default {
   ],
   theme: {
     extend: {
+      height: {
+        header: 'var(--height-header)', // 63px
+        input: 'var(--height-input)', // 40px
+      },
+      size: {
+        input: 'var(--height-input)', // 40px
+      },
+      width: {
+        input: 'var(--height-input)', // 40px
+      },
+      minHeight: {
+        input: 'var(--height-input)', // 40px
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -51,11 +64,33 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        boxShadow: {
+          primary: 'var(--shadow-primary)',
+        },
+        containers: {
+          none: '0rem',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      'collapse-down': {
+        from: { height: '0' },
+        to: { height: 'var(--radix-collapsible-content-height)' },
+      },
+      'collapse-up': {
+        from: { height: 'var(--radix-collapsible-content-height)' },
+        to: { height: '0' },
+      },
+      'accordion-down': {
+        from: { height: '0' },
+        to: { height: 'var(--radix-accordion-content-height)' },
+      },
+      'accordion-up': {
+        from: { height: 'var(--radix-accordion-content-height)' },
+        to: { height: '0' },
       },
     },
   },
