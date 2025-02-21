@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Button } from '../ui/button';
 
 export default function ThemeToggle() {
   const [darkMode, setDarkMode] = useState(false);
@@ -17,12 +18,12 @@ export default function ThemeToggle() {
   };
 
   return (
-    <button
+    <Button
       onClick={toggleDarkMode}
       className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
       title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
     >
       {darkMode ? '🌞' : '🌙'}
-    </button>
+    </Button>
   );
 }

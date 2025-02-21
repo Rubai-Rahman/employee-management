@@ -16,7 +16,6 @@ body {
     --background: var(--light);
     /* Black */
     --foreground: var(--dark);
-
     /* Gray Background */
     --background-gray: 210 17% 98%;
     /* Primary */
@@ -75,6 +74,15 @@ body {
 @layer base {
   * {
     @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
