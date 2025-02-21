@@ -1,29 +1,46 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
+import { Moon, SunDim } from 'lucide-react';
+import { TooltipContainer } from '../ui/tooltip';
+import { useTheme } from 'next-themes';
 
-export default function ThemeToggle() {
-  const [darkMode, setDarkMode] = useState(false);
+const ThemeSwitch = () => {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
+  // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
-    if (document.documentElement.classList.contains('dark')) {
-      setDarkMode(true);
-    }
+    setMounted(true);
   }, []);
 
+  if (!mounted) {
+    return (
+      <Button disabled variant="secondary-ghost" size="icon" rounded="full">
+        <SunDim />
+      </Button>
+    );
+  }
+
+  const ThemeIcon = theme === 'dark' ? Moon : SunDim;
+  const themeLabel = theme === 'dark' ? 'To Light Mode' : 'To Dark Mode';
+
   const toggleDarkMode = () => {
-    document.documentElement.classList.toggle('dark');
-    setDarkMode(!darkMode);
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <Button
-      onClick={toggleDarkMode}
-      className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-      title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-    >
-      {darkMode ? '🌞' : '🌙'}
-    </Button>
+    <TooltipContainer side="right" label={themeLabel}>
+      <Button
+        variant="secondary-ghost"
+        size="icon"
+        rounded="full"
+        onClick={toggleDarkMode}
+      >
+        <ThemeIcon />
+        <span className="sr-only">{themeLabel}</span>
+      </Button>
+    </TooltipContainer>
   );
-}
+};
+
+export default ThemeSwitch;
