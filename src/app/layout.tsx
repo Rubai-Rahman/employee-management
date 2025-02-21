@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import '../styles./globals.css';
 import Navbar from '@/components/main/Navbar';
 import Sidebar from '@/components/main/Sidebar';
-import { MenuProvider } from '@/components/providers/MenuProvider';
+import Providers from './provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white`}
       >
-        <MenuProvider>
+        <Providers>
           <div className="flex flex-col h-screen">
             {/* Top Navigation Bar */}
             <Navbar />
@@ -43,7 +43,7 @@ export default function RootLayout({
               <main className="flex-1 overflow-auto p-6">{children}</main>
             </div>
           </div>
-        </MenuProvider>
+        </Providers>
       </body>
     </html>
   );

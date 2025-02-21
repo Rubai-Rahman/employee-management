@@ -20,7 +20,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <div className="relative">
-            <Button size="icon">
+            <Button size="icon" variant="secondary-ghost">
               <UserRound />
             </Button>
           </div>
