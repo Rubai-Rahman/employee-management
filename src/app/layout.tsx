@@ -4,6 +4,7 @@ import '../styles./globals.css';
 import Navbar from '@/components/main/Navbar';
 import Sidebar from '@/components/main/Sidebar';
 import Providers from './provider';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -40,7 +41,10 @@ export default function RootLayout({
               <Sidebar />
 
               {/* Main Content */}
-              <main className="flex-1 overflow-auto p-6">{children}</main>
+              <main className="flex-1 overflow-auto p-6">
+                {children}
+                <Toaster position="top-center" />
+              </main>
             </div>
           </div>
         </Providers>
