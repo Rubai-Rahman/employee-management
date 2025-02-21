@@ -1,5 +1,8 @@
 'use client';
 
+import { fetchEmployee } from '@/services/employeeService';
+import { useQuery } from '@tanstack/react-query';
+
 type Employee = {
   id: number;
   name: string;
@@ -86,6 +89,13 @@ export const dummyEmployees: Employee[] = [
 ];
 
 export default function EmployeeCardView() {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['posts'], // Unique query key
+    queryFn: fetchEmployee, // API function
+  });
+  console.log('daata', data);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
   const employees = dummyEmployees;
 
   return (
