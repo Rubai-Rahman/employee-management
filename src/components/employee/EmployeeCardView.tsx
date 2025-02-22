@@ -29,7 +29,7 @@ export default function EmployeeCardView() {
     queryKey: ['employees'],
     queryFn: fetchEmployee,
   });
-  console.log('data', emplyeesData);
+
   if (isPending) return <CardSkeleton />;
   if (error) return <ErrorResultMessage message={error.message} />;
 

@@ -18,7 +18,7 @@ export default function Filters({
   onStatusChange,
 }: FiltersProps) {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 bg-secondary text-secondary-foreground">
       <Select onValueChange={onDepartmentChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="All Departments" />

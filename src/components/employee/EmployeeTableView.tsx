@@ -19,6 +19,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEmployee } from '@/services/employeeService';
+import { ErrorResultMessage } from '../ui/data-result-message';
+import CardSkeleton from './CardSkeleton';
 type Employee = {
   employeeId?: number;
   id: number;
@@ -107,17 +111,29 @@ export const dummyEmployees: Employee[] = [
 
 export default function EmployeeTableView() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(dummyEmployees.length / itemsPerPage);
+
+  const {
+    data: emplyeesData,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ['employees'],
+    queryFn: fetchEmployee,
+  });
+  if (isPending) return <CardSkeleton />;
+  if (error) return <ErrorResultMessage message={error.message} />;
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(emplyeesData.data.length / itemsPerPage);
 
   const getCurrentPageData = () => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return dummyEmployees.slice(start, end);
+    return emplyeesData.data.slice(start, end);
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-secondary text-secondary-foreground">
       <Table>
         <TableHeader>
           <TableRow>
@@ -130,8 +146,8 @@ export default function EmployeeTableView() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {getCurrentPageData().map((employee) => (
-            <TableRow key={employee.id}>
+          {getCurrentPageData().map((employee: Employee) => (
+            <TableRow key={employee.employeeId}>
               <TableCell>
                 <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                   👤
@@ -143,10 +159,14 @@ export default function EmployeeTableView() {
               <TableCell>{employee.department}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="ghost" size="icon">
                     <Pencil />
                   </Button>
-                  <Button variant="destructive" size="sm">
+                  <Button
+                    variant="ghost"
+                    className="text-destructive/60 hover:text-destructive"
+                    size="icon"
+                  >
                     <Trash2 />
                   </Button>
                 </div>
