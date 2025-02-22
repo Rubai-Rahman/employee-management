@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -91,7 +90,7 @@ export function EmployeeFormDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant="outline-colored">
           <Plus className="mr-2 h-4 w-4" />
           Add Employee
         </Button>
@@ -120,7 +119,7 @@ export function EmployeeFormDialog() {
                         className="rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-700">
+                      <div className="flex h-full w-full items-center justify-center rounded-full ">
                         <Upload className="h-8 w-8 text-muted-foreground" />
                       </div>
                     )}

@@ -12,15 +12,12 @@ export type Address = {
 };
 
 export type Employee = {
-  _id: string;
-  employeeId: number;
-  fullName: FullName;
-  phone: string;
+  employeeId?: number;
+  id: number;
+  fullName: { firstName: string; lastName: string };
   email: string;
-  address: Address;
+  phone: string;
+  address: string;
+  profilePicture?: string;
   department: string;
-  status: 'active' | 'inactive';
-  profilePicture: string;
-  createdAt: string;
-  updatedAt: string;
 };

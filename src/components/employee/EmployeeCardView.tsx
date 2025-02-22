@@ -8,17 +8,7 @@ import { Trash2, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ErrorResultMessage } from '../ui/data-result-message';
 import CardSkeleton from './CardSkeleton';
-
-type Employee = {
-  employeeId: number;
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  profilePicture?: string;
-  department: string;
-};
+import { Employee } from '@/types/employee';
 
 export default function EmployeeCardView() {
   const {
@@ -48,21 +38,23 @@ export default function EmployeeCardView() {
                 size="icon"
               >
                 <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Delete {employee.name}</span>
               </Button>
             </div>
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage
                   src={employee.profilePicture}
-                  alt={`${employee.name}'s profile picture`}
+                  alt={`${employee.fullName.firstName} ${employee.fullName.lastName} profile picture`}
                 />
                 <AvatarFallback className="bg-muted">
                   <User className="h-8 w-8" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 space-y-1">
-                <h3 className="font-bold">{employee.name}</h3>
+                <h3 className="font-bold">
+                  {' '}
+                  {`${employee.fullName.firstName} ${employee.fullName.lastName}`}
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {employee.email}
                 </p>
