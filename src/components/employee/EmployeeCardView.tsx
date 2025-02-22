@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchEmployee, deleteEmployeeById } from '@/services/employeeService';
+import { fetchEmployees, deleteEmployeeById } from '@/services/employeeService';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -34,7 +34,7 @@ export default function EmployeeCardView() {
     isPending: employeeLoading,
   } = useQuery({
     queryKey: ['employees'],
-    queryFn: fetchEmployee,
+    queryFn: fetchEmployees,
   });
 
   const { mutate: deleteEmployee, isPending } = useMutation({

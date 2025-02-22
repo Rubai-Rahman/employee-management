@@ -21,15 +21,21 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Pencil, Trash2, User } from 'lucide-react';
-import { fetchEmployee } from '@/services/employeeService';
+import { fetchEmployees } from '@/services/employeeService';
 import { ErrorResultMessage } from '../ui/data-result-message';
 import { Employee } from '@/types/employee';
 import TableSkeleton from './TableSkeleton';
-
+interface EmployeeTableViewProps {
+  setId: (id: number) => void;
+  setOpenForm: (open: boolean) => void;
+}
 // Constants
 const ITEMS_PER_PAGE = 10;
 
-export default function EmployeeTableView() {
+export default function EmployeeTableView({
+  setId,
+  setOpenForm,
+}: EmployeeTableViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -38,7 +44,7 @@ export default function EmployeeTableView() {
     isPending,
   } = useQuery({
     queryKey: ['employees'],
-    queryFn: fetchEmployee,
+    queryFn: fetchEmployees,
   });
 
   // Memoize paginated data
@@ -62,7 +68,10 @@ export default function EmployeeTableView() {
   const handlePageChange = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(totalPages, page)));
   };
-
+  const handleEdit = (id: number) => {
+    setId(id);
+    setOpenForm(true);
+  };
   // Get initials for avatar fallback
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName[0]}${lastName[0]}`.toUpperCase();
@@ -115,6 +124,9 @@ export default function EmployeeTableView() {
                 <TableCell>
                   <div className="flex gap-2">
                     <Button
+                      onClick={() =>
+                        handleEdit(employee.employeeId ?? employee.id)
+                      }
                       variant="ghost"
                       size="icon"
                       className="hover:text-primary"

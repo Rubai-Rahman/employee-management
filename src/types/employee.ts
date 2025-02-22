@@ -17,7 +17,7 @@ export type Employee = {
   fullName: { firstName: string; lastName: string };
   email: string;
   phone: string;
-  address: string;
+  address: { street: string; city: string; country: string };
   profilePicture?: string;
   department: string;
 };
