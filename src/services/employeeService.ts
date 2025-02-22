@@ -7,6 +7,7 @@ export const fetchEmployees = async () => {
 };
 // Fetch employeeById from API
 export const fetchEmployee = async (id: number) => {
+  console.log('serviceId', id);
   const response = await api.get(`/employees/${id}`);
   return response.data;
 };

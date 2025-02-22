@@ -71,7 +71,7 @@ export default function EmployeeCardView() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {employeesData.data.map((employee: Employee) => (
           <Card
-            key={employee.employeeId}
+            key={employee?.employeeId}
             className="relative group bg-secondary text-secondary-foreground"
           >
             <CardContent className="pt-6">

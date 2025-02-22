@@ -52,7 +52,7 @@ type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
 interface EmployeeFormDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  defaultValues: Employee;
+  defaultValues?: Employee;
 }
 
 export function EmployeeFormDialog({
@@ -62,7 +62,14 @@ export function EmployeeFormDialog({
 }: EmployeeFormDialogProps) {
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
-    defaultValues,
+    defaultValues: defaultValues || {
+      fullName: { firstName: '', lastName: '' },
+      phone: '',
+      email: '',
+      address: { street: '', city: '', country: '' },
+      department: '',
+      status: 'active',
+    },
   });
 
   function onSubmit(data: EmployeeFormValues) {
@@ -70,7 +77,7 @@ export function EmployeeFormDialog({
     setOpen(false);
     // Handle form submission
   }
-
+  console.log('defaultValues', defaultValues);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[600px]">
@@ -80,7 +87,10 @@ export function EmployeeFormDialog({
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 p-4 max-h-[calc(100vh-200px)] overflow-y-auto"
+          >
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -227,7 +237,7 @@ export function EmployeeFormDialog({
                 Cancel
               </Button>
               <Button type="submit">
-                {defaultValues.employeeId
+                {defaultValues?.employeeId
                   ? 'Update Employee'
                   : 'Create Employee'}
               </Button>

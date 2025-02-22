@@ -96,7 +96,7 @@ export default function EmployeeTableView({
           </TableHeader>
           <TableBody>
             {paginatedData.map((employee: Employee) => (
-              <TableRow key={employee.employeeId ?? employee.id}>
+              <TableRow key={employee?.employeeId ?? employee._id}>
                 <TableCell>
                   <Avatar>
                     <AvatarImage
@@ -125,7 +125,7 @@ export default function EmployeeTableView({
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
-                        handleEdit(employee.employeeId ?? employee.id)
+                        handleEdit(employee?.employeeId ?? employee._id)
                       }
                       variant="ghost"
                       size="icon"

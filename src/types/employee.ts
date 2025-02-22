@@ -13,7 +13,7 @@ export type Address = {
 
 export type Employee = {
   employeeId?: number;
-  id: number;
+  _id: number;
   fullName: { firstName: string; lastName: string };
   email: string;
   phone: string;
