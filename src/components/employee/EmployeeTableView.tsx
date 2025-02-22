@@ -18,8 +18,92 @@ import {
 } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { dummyEmployees } from './EmployeeCardView';
 import { Pencil, Trash2 } from 'lucide-react';
+type Employee = {
+  employeeId?: number;
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  profilePicture?: string;
+  department: string;
+};
+
+export const dummyEmployees: Employee[] = [
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    phone: '(555) 123-4567',
+    address: '123 Main St, City, State',
+    department: 'Engineering',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    phone: '(555) 234-5678',
+    address: '456 Oak Ave, City, State',
+    department: 'Marketing',
+  },
+  {
+    id: 3,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 4,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 5,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 6,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 7,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 8,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+  {
+    id: 9,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    phone: '(555) 345-6789',
+    address: '789 Pine Rd, City, State',
+    department: 'Sales',
+  },
+];
 
 export default function EmployeeTableView() {
   const [currentPage, setCurrentPage] = useState(1);

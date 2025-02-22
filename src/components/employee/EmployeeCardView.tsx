@@ -2,8 +2,13 @@
 
 import { fetchEmployee } from '@/services/employeeService';
 import { useQuery } from '@tanstack/react-query';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent } from '@/components/ui/card';
+import { Trash2, User } from 'lucide-react';
+import { Button } from '../ui/button';
 
 type Employee = {
+  employeeId: number;
   id: number;
   name: string;
   email: string;
@@ -13,116 +18,58 @@ type Employee = {
   department: string;
 };
 
-export const dummyEmployees: Employee[] = [
-  {
-    id: 1,
-    name: 'John Doe',
-    email: 'john@example.com',
-    phone: '(555) 123-4567',
-    address: '123 Main St, City, State',
-    department: 'Engineering',
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    phone: '(555) 234-5678',
-    address: '456 Oak Ave, City, State',
-    department: 'Marketing',
-  },
-  {
-    id: 3,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 4,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 5,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 6,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 7,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 8,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-  {
-    id: 9,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    phone: '(555) 345-6789',
-    address: '789 Pine Rd, City, State',
-    department: 'Sales',
-  },
-];
-
 export default function EmployeeCardView() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ['posts'], // Unique query key
+  const {
+    data: emplyeesData,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ['employees'], // Unique query key
     queryFn: fetchEmployee, // API function
   });
-  console.log('daata', data);
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  const employees = dummyEmployees;
+  if (isPending) return <p>Loading...</p>;
+  if (error) return;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {employees.map((employee) => (
-        <div
-          key={employee.id}
-          className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-2xl">
-              👤
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+      {emplyeesData.data.map((employee: Employee) => (
+        <Card key={employee.employeeId} className="relative group">
+          <CardContent className="pt-6">
+            <div className="absolute top-2 right-2 ">
+              <Button
+                variant="ghost"
+                className="text-destructive/60 hover:text-destructive"
+                size="icon"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="sr-only">Delete {employee.name}</span>
+              </Button>
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold">{employee.name}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {employee.email}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {employee.phone}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {employee.department}
-              </p>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage
+                  src={employee.profilePicture}
+                  alt={`${employee.name}'s profile picture`}
+                />
+                <AvatarFallback className="bg-muted">
+                  <User className="h-8 w-8" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-1">
+                <h3 className="font-bold">{employee.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {employee.email}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {employee.phone}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {employee.department}
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
