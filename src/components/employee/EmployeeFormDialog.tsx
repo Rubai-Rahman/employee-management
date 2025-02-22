@@ -96,7 +96,7 @@ export function EmployeeFormDialog() {
           Add Employee
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px] bg-gray-700">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px] ">
         <DialogHeader>
           <DialogTitle>Add New Employee</DialogTitle>
           <DialogDescription>

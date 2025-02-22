@@ -1,19 +1,46 @@
 'use client';
 
-export default function Filters() {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+interface FiltersProps {
+  onDepartmentChange?: (value: string) => void;
+  onStatusChange?: (value: string) => void;
+}
+
+export default function Filters({
+  onDepartmentChange,
+  onStatusChange,
+}: FiltersProps) {
   return (
-    <div className="flex gap-2">
-      <select className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
-        <option value="">All Departments</option>
-        <option value="engineering">Engineering</option>
-        <option value="marketing">Marketing</option>
-        <option value="sales">Sales</option>
-      </select>
-      <select className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
+    <div className="flex gap-4">
+      <Select onValueChange={onDepartmentChange}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="All Departments" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Departments</SelectItem>
+          <SelectItem value="engineering">Engineering</SelectItem>
+          <SelectItem value="marketing">Marketing</SelectItem>
+          <SelectItem value="sales">Sales</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select onValueChange={onStatusChange}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="All Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Status</SelectItem>
+          <SelectItem value="active">Active</SelectItem>
+          <SelectItem value="inactive">Inactive</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
 }

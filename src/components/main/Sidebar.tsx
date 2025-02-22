@@ -75,6 +75,7 @@ const SidebarItem = React.memo(
                   key={index}
                   path={subItem.path}
                   active={subItem.active}
+                  className="w-full justify-start gap-3 px-4 py-2 font-medium hover:bg-secondary"
                 >
                   {subItem.label}
                 </NavButton>

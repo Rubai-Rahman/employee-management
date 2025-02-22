@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Trash2, User } from 'lucide-react';
 import { Button } from '../ui/button';
+import { ErrorResultMessage } from '../ui/data-result-message';
 
 type Employee = {
   employeeId: number;
@@ -24,11 +25,12 @@ export default function EmployeeCardView() {
     error,
     isPending,
   } = useQuery({
-    queryKey: ['employees'], // Unique query key
-    queryFn: fetchEmployee, // API function
+    queryKey: ['employees'],
+    queryFn: () => fetchEmployee(),
   });
+
   if (isPending) return <p>Loading...</p>;
-  if (error) return;
+  if (error) return <ErrorResultMessage />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
