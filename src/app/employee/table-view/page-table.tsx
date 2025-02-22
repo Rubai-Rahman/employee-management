@@ -4,6 +4,7 @@ import { EmployeeFormDialog } from '@/components/employee/EmployeeFormDialog';
 import EmployeeTableView from '@/components/employee/EmployeeTableView';
 import Filters from '@/components/shared/Filters';
 import SearchBar from '@/components/shared/SearchBar';
+import { Button } from '@/components/ui/button';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { fetchEmployee } from '@/services/employeeService';
 import { useQuery } from '@tanstack/react-query';
@@ -11,29 +12,36 @@ import { useState } from 'react';
 
 export default function TableViewPage() {
   const [openForm, setOpenForm] = useState(false);
-  const [selectedId, setSelectedId] = useState<number>(0);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  // Only fetch the employee when an id is selected and the form is open.
   const { data: employeeData, isError } = useQuery({
     queryKey: ['employee', selectedId],
-    queryFn: () => fetchEmployee(selectedId),
-    enabled: selectedId !== 0 && openForm,
+    queryFn: () => fetchEmployee(selectedId as number),
+    enabled: selectedId !== null,
+    select: (data) => data.data,
   });
-  console.log('employeeData', employeeData, 'selectedId', selectedId);
 
   if (isError) {
     return <ErrorResultMessage />;
   }
-
+  const handleAddEmployee = () => {
+    setOpenForm(true);
+  };
+  console.log('singleEmpllyeData', employeeData);
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
         <SearchBar />
         <Filters />
       </div>
+      <div>
+        <Button onClick={handleAddEmployee}>Add new Employe</Button>
+      </div>
       <EmployeeFormDialog
         open={openForm}
         setOpen={setOpenForm}
-        defaultValues={selectedId !== 0 ? employeeData?.data : undefined}
+        defaultValues={employeeData}
       />
       <EmployeeTableView setId={setSelectedId} setOpenForm={setOpenForm} />
     </div>

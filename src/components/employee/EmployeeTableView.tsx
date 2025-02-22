@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Table,
@@ -25,11 +25,12 @@ import { fetchEmployees } from '@/services/employeeService';
 import { ErrorResultMessage } from '../ui/data-result-message';
 import { Employee } from '@/types/employee';
 import TableSkeleton from './TableSkeleton';
+
 interface EmployeeTableViewProps {
-  setId: (id: number) => void;
+  setId: (id: number | null) => void;
   setOpenForm: (open: boolean) => void;
 }
-// Constants
+
 const ITEMS_PER_PAGE = 10;
 
 export default function EmployeeTableView({
@@ -47,35 +48,35 @@ export default function EmployeeTableView({
     queryFn: fetchEmployees,
   });
 
-  // Memoize paginated data
-  const paginatedData = useMemo(() => {
-    if (!employeesData?.data) return [];
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return employeesData.data.slice(start, end);
-  }, [employeesData, currentPage]);
+  const employees: Employee[] = employeesData?.data ?? [];
+  const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
 
-  // Memoize total pages
-  const totalPages = useMemo(
-    () =>
-      employeesData?.data
-        ? Math.ceil(employeesData.data.length / ITEMS_PER_PAGE)
-        : 0,
-    [employeesData]
+  // Memoize paginated data based on the current page
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return employees.slice(start, start + ITEMS_PER_PAGE);
+  }, [employees, currentPage]);
+
+  // useCallback for stable function references
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const newPage = Math.max(1, Math.min(page, totalPages));
+      setCurrentPage(newPage);
+    },
+    [totalPages]
   );
 
-  // Handle page changes
-  const handlePageChange = (page: number) => {
-    setCurrentPage(Math.max(1, Math.min(totalPages, page)));
-  };
-  const handleEdit = (id: number) => {
-    setId(id);
-    setOpenForm(true);
-  };
-  // Get initials for avatar fallback
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
-  };
+  const handleEdit = useCallback(
+    (id: number | null) => {
+      setId(id);
+      setOpenForm(true);
+    },
+    [setId, setOpenForm]
+  );
+
+  const getInitials = useCallback((firstName: string, lastName: string) => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  }, []);
 
   if (isPending) return <TableSkeleton />;
   if (error) return <ErrorResultMessage message={error.message} />;
@@ -95,57 +96,54 @@ export default function EmployeeTableView({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((employee: Employee) => (
-              <TableRow key={employee._id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage
-                      src={employee.profilePicture}
-                      alt={`${employee.fullName.firstName} ${employee.fullName.lastName}'s profile picture`}
-                    />
-                    <AvatarFallback>
-                      {employee.profilePicture ? (
-                        <User className="h-4 w-4" />
-                      ) : (
-                        getInitials(
-                          employee.fullName.firstName,
-                          employee.fullName.lastName
-                        )
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell className="font-medium">
-                  {`${employee.fullName.firstName} ${employee.fullName.lastName}`}
-                </TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.phone}</TableCell>
-                <TableCell>{employee.department}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleEdit(employee?._id)}
-                      variant="ghost"
-                      size="icon"
-                      className="hover:text-primary"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive/60 hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">
-                        Delete {employee.fullName.firstName}{' '}
-                        {employee.fullName.lastName}
-                      </span>
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {paginatedData.map((employee: Employee) => {
+              const { firstName, lastName } = employee.fullName;
+              return (
+                <TableRow key={employee._id}>
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage
+                        src={employee.profilePicture}
+                        alt={`${firstName} ${lastName}`}
+                      />
+                      <AvatarFallback>
+                        {employee.profilePicture ? (
+                          <User className="h-4 w-4" />
+                        ) : (
+                          getInitials(firstName, lastName)
+                        )}
+                      </AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell className="font-medium">{`${firstName} ${lastName}`}</TableCell>
+                  <TableCell>{employee.email}</TableCell>
+                  <TableCell>{employee.phone}</TableCell>
+                  <TableCell>{employee.department}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleEdit(employee.employeeId)}
+                        variant="ghost"
+                        size="icon"
+                        className="hover:text-primary"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive/60 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">
+                          Delete {firstName} {lastName}
+                        </span>
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
