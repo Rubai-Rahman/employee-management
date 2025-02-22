@@ -14,7 +14,7 @@ export default function TableViewPage() {
   const [openForm, setOpenForm] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // Only fetch the employee when an id is selected and the form is open.
+  // Only fetch the employee when an id is selected.
   const { data: employeeData, isError } = useQuery({
     queryKey: ['employee', selectedId],
     queryFn: () => fetchEmployee(selectedId as number),
@@ -25,10 +25,15 @@ export default function TableViewPage() {
   if (isError) {
     return <ErrorResultMessage />;
   }
+
   const handleAddEmployee = () => {
+    // Reset selectedId to ensure no default values are loaded.
+    setSelectedId(null);
     setOpenForm(true);
   };
-  console.log('singleEmpllyeData', employeeData);
+
+  console.log('singleEmployeeData', employeeData);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
@@ -36,12 +41,13 @@ export default function TableViewPage() {
         <Filters />
       </div>
       <div>
-        <Button onClick={handleAddEmployee}>Add new Employe</Button>
+        <Button onClick={handleAddEmployee}>Add New Employee</Button>
       </div>
       <EmployeeFormDialog
         open={openForm}
         setOpen={setOpenForm}
-        defaultValues={employeeData}
+        // If no employee is selected (adding new), pass undefined to trigger empty form defaults.
+        defaultValues={selectedId !== null ? employeeData : undefined}
       />
       <EmployeeTableView setId={setSelectedId} setOpenForm={setOpenForm} />
     </div>

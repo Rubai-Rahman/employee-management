@@ -277,7 +277,11 @@ export function EmployeeFormDialog({
 
               {/* Action Buttons */}
               <div className="flex justify-between space-x-4 pt-4 border-t border-gray-200">
-                <Button variant="outline" onClick={() => setOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button type="submit">
