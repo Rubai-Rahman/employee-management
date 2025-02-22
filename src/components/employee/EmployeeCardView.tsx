@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Trash2, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ErrorResultMessage } from '../ui/data-result-message';
+import CardSkeleton from './CardSkeleton';
 
 type Employee = {
   employeeId: number;
@@ -26,20 +27,23 @@ export default function EmployeeCardView() {
     isPending,
   } = useQuery({
     queryKey: ['employees'],
-    queryFn: () => fetchEmployee(),
+    queryFn: fetchEmployee,
   });
-
-  if (isPending) return <p>Loading...</p>;
-  if (error) return <ErrorResultMessage />;
+  console.log('data', emplyeesData);
+  if (isPending) return <CardSkeleton />;
+  if (error) return <ErrorResultMessage message={error.message} />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {emplyeesData.data.map((employee: Employee) => (
-        <Card key={employee.employeeId} className="relative group">
+        <Card
+          key={employee.employeeId}
+          className="relative group bg-secondary text-secondary-foreground"
+        >
           <CardContent className="pt-6">
             <div className="absolute top-2 right-2 ">
               <Button
-                variant="ghost"
+                variant="secondary-ghost"
                 className="text-destructive/60 hover:text-destructive"
                 size="icon"
               >

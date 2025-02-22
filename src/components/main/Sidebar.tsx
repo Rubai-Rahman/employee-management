@@ -25,7 +25,7 @@ const navItems = [
     label: 'Employee',
     path: '/employee',
     subItems: [
-      { label: 'Card View', path: '/employee/card-view' },
+      { label: 'Card View', path: '/employee' },
       {
         label: 'Table View',
         path: '/employee/table-view',
