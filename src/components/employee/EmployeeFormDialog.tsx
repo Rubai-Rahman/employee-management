@@ -52,13 +52,15 @@ const employeeFormSchema = z.object({
 });
 
 type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
-
+interface EmployeeFormDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
 const defaultValues: Partial<EmployeeFormValues> = {
   status: true,
 };
 
-export function EmployeeFormDialog() {
-  const [open, setOpen] = useState(false);
+export function EmployeeFormDialog({ open, setOpen }: EmployeeFormDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<EmployeeFormValues>({

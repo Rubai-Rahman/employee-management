@@ -1,4 +1,3 @@
-import EmployeeCardView from '@/components/employee/EmployeeCardView';
 import Filters from '@/components/shared/Filters';
 import SearchBar from '@/components/shared/SearchBar';
 
@@ -9,7 +8,6 @@ export default function Home() {
         <SearchBar />
         <Filters />
       </div>
-      <EmployeeCardView />
     </div>
   );
 }
