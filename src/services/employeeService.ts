@@ -15,6 +15,13 @@ export const createNewEmployee = async (employeeData: Employee) => {
   const response = await api.post(`/employees/create-employee`, employeeData);
   return response.data;
 };
+export const updateEmployee = async (employeeData: Employee) => {
+  const response = await api.put(
+    `/employees/${employeeData.employeeId}`,
+    employeeData
+  );
+  return response.data;
+};
 // Delete employee by ID
 export const deleteEmployeeById = async (id: number) => {
   const response = await api.delete(`/employees/${id}`); // Fixed URL (removed `:`)

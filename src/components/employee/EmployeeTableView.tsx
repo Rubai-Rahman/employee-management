@@ -121,9 +121,6 @@ export default function EmployeeTableView({
                         className="text-destructive/60 hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">
-                          Delete {firstName} {lastName}
-                        </span>
                       </Button>
                     </div>
                   </TableCell>

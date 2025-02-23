@@ -31,7 +31,7 @@ import { useEffect } from 'react';
 import { ImageUpload } from './Image-upload';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { createNewEmployee } from '@/services/employeeService';
+import { createNewEmployee, updateEmployee } from '@/services/employeeService';
 
 const departments = [
   'Human Resources',
@@ -69,16 +69,18 @@ interface EmployeeFormDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   defaultValues?: Employee;
+  type: string;
 }
 
 export function EmployeeFormDialog({
   open,
   setOpen,
   defaultValues,
+  type,
 }: EmployeeFormDialogProps) {
   const qc = useQueryClient();
 
-  // Delete employee mutation
+  // create employee mutation
   const { mutate: createEmployee } = useMutation({
     mutationKey: ['employees_create'],
     mutationFn: createNewEmployee,
@@ -88,6 +90,25 @@ export function EmployeeFormDialog({
       console.log('error', error);
       if (error.response?.status === 400) {
         toast.error(error.response.data.message || 'Employee creation failed');
+      } else {
+        toast.error(
+          error.response.data.message || 'An unexpected error occurred'
+        );
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['employees'] });
+    },
+  });
+  const { mutate: update } = useMutation({
+    mutationKey: ['employees_create'],
+    mutationFn: updateEmployee,
+    onSuccess: () => toast.success('Employee update successfully'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      console.log('error', error);
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.message || 'Employee update failed');
       } else {
         toast.error(
           error.response.data.message || 'An unexpected error occurred'
@@ -118,8 +139,11 @@ export function EmployeeFormDialog({
   function onSubmit(data: EmployeeFormValues) {
     console.log(data);
     setOpen(false);
-    createEmployee(data);
-    // Handle form submission
+    if (type === 'create') {
+      createEmployee(data);
+    } else {
+      update(data);
+    }
   }
 
   return (

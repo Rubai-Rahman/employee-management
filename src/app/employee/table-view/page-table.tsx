@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 
 export default function TableViewPage() {
   const [openForm, setOpenForm] = useState(false);
+  const [mutationType, setMutationType] = useState('');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [defaultValues, setDefaultValues] = useState<Employee>();
 
@@ -46,6 +47,7 @@ export default function TableViewPage() {
     });
     setSelectedId(null);
     setOpenForm(true);
+    setMutationType('create');
   };
 
   const handleEditEmployee = (id: number) => {
@@ -67,6 +69,7 @@ export default function TableViewPage() {
         open={openForm}
         setOpen={setOpenForm}
         defaultValues={defaultValues}
+        type={mutationType}
       />
 
       <EmployeeTableView onEdit={handleEditEmployee} />
