@@ -2,7 +2,7 @@ import { Input } from '../ui/input';
 
 interface SearchBarProps {
   onSearch: (value: string) => void;
-  value: string; // Add value to make the input controlled
+  value: string;
 }
 
 export default function SearchBar({ onSearch, value }: SearchBarProps) {

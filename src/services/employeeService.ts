@@ -6,6 +6,20 @@ export const fetchEmployees = async () => {
   const response = await api.get(`/employees`);
   return response.data;
 };
+// Fetch employess from API
+export const fetchEmployeesParams = async (
+  search?: string,
+  filter?: string
+) => {
+  const params: Record<string, string> = {};
+
+  if (search) params.search = search;
+  if (filter) params.filter = filter;
+
+  const response = await api.get(`/employees`, { params });
+  return response.data;
+};
+
 // Fetch employeeById from API
 export const fetchEmployee = async (id: number | null) => {
   const response = await api.get(`/employees/${id}`);

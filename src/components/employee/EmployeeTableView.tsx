@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 import { Employee } from '@/types/employee';
+import { EmptyResultMessage } from '../ui/data-result-message';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -80,7 +81,8 @@ export default function EmployeeTableView({
   const getInitials = useCallback((firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   }, []);
-
+  if (employeesData.length === 0)
+    return <EmptyResultMessage message="No Employe found" />;
   return (
     <div className="space-y-4">
       <div className="rounded-md border">
@@ -92,6 +94,7 @@ export default function EmployeeTableView({
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Department</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -119,6 +122,7 @@ export default function EmployeeTableView({
                   <TableCell>{employee.email}</TableCell>
                   <TableCell>{employee.phone}</TableCell>
                   <TableCell>{employee.department}</TableCell>
+                  <TableCell>{employee.status}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button

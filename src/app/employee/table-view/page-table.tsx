@@ -7,10 +7,14 @@ import Filters from '@/components/shared/Filters';
 import SearchBar from '@/components/shared/SearchBar';
 import { Button } from '@/components/ui/button';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
-import { fetchEmployee, fetchEmployees } from '@/services/employeeService';
+import {
+  fetchEmployee,
+  fetchEmployeesParams,
+} from '@/services/employeeService';
 import { Employee } from '@/types/employee';
 import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 export default function TableViewPage() {
   const [openForm, setOpenForm] = useState(false);
@@ -26,13 +30,14 @@ export default function TableViewPage() {
     enabled: selectedId !== null,
     select: (data) => data.data,
   });
+
   const {
     data: employeesData,
     error,
     isPending,
   } = useQuery({
-    queryKey: ['employees'],
-    queryFn: fetchEmployees,
+    queryKey: ['employees', searchValue, filterValue],
+    queryFn: () => fetchEmployeesParams(searchValue, filterValue),
     select: (data) => data.data,
   });
 
@@ -42,6 +47,18 @@ export default function TableViewPage() {
       setOpenForm(true); // Open form only after data is available
     }
   }, [employeeData, selectedId]);
+
+  const debouncedSearch = useMemo(() => {
+    return debounce((value: string) => {
+      setSearchValue(value);
+    }, 500);
+  }, []);
+  const handleSearchEmployee = useCallback(
+    (value: string) => {
+      debouncedSearch(value);
+    },
+    [debouncedSearch]
+  );
 
   if (isPending) return <TableSkeleton />;
   if (error) return <ErrorResultMessage message={error.message} />;
@@ -64,13 +81,11 @@ export default function TableViewPage() {
   const handleEditEmployee = (id: number) => {
     setSelectedId(id);
   };
+
   const handleFilterEmployee = (value: string) => {
     setFilterValue(value);
   };
-  const handleSearchEmployee = (value: string) => {
-    setSearchValue(value);
-  };
-  console.log('SearchValue', searchValue, filterValue);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
