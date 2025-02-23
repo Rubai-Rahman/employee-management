@@ -1,4 +1,5 @@
 import api from '@/lib/axios';
+import { Employee } from '@/types/employee';
 
 // Fetch employess from API
 export const fetchEmployees = async () => {
@@ -7,8 +8,11 @@ export const fetchEmployees = async () => {
 };
 // Fetch employeeById from API
 export const fetchEmployee = async (id: number | null) => {
-  console.log('serviceId', id);
   const response = await api.get(`/employees/${id}`);
+  return response.data;
+};
+export const createNewEmployee = async (employeeData: Employee) => {
+  const response = await api.post(`/employees/create-employee`, employeeData);
   return response.data;
 };
 // Delete employee by ID

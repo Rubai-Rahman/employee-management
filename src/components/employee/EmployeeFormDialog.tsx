@@ -29,6 +29,9 @@ import {
 import { Employee } from '@/types/employee';
 import { useEffect } from 'react';
 import { ImageUpload } from './Image-upload';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { createNewEmployee } from '@/services/employeeService';
 
 const departments = [
   'Human Resources',
@@ -41,7 +44,9 @@ const departments = [
 ];
 // Zod schema for form validation
 const employeeFormSchema = z.object({
-  employeeId: z.number().gt(0, { message: 'Value must be greter than 0' }),
+  employeeId: z.coerce
+    .number()
+    .gt(0, { message: 'Value must be greter than 0' }),
   fullName: z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -71,6 +76,29 @@ export function EmployeeFormDialog({
   setOpen,
   defaultValues,
 }: EmployeeFormDialogProps) {
+  const qc = useQueryClient();
+
+  // Delete employee mutation
+  const { mutate: createEmployee } = useMutation({
+    mutationKey: ['employees_create'],
+    mutationFn: createNewEmployee,
+    onSuccess: () => toast.success('Employee created successfully'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      console.log('error', error);
+      if (error.response?.status === 400) {
+        // This is the expected error for existing employee
+        toast.error(error.response.data.message || 'Employee creation failed');
+      } else {
+        toast.error(
+          error.response.data.message || 'An unexpected error occurred'
+        );
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['employees'] });
+    },
+  });
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: defaultValues || {
@@ -87,9 +115,11 @@ export function EmployeeFormDialog({
       form.reset(defaultValues);
     }
   }, [defaultValues, form]);
+
   function onSubmit(data: EmployeeFormValues) {
     console.log(data);
     setOpen(false);
+    createEmployee(data);
     // Handle form submission
   }
 
