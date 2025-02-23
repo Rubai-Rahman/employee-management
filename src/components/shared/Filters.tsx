@@ -8,35 +8,41 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+const departments = [
+  'Human Resources',
+  'Marketing',
+  'Sales',
+  'Engineering',
+  'Finance',
+  'Operations',
+  'Customer Support',
+];
+
 interface FiltersProps {
-  onDepartmentChange?: (value: string) => void;
-  onStatusChange?: (value: string) => void;
+  onSearch: (value: string) => void;
 }
 
-export default function Filters({
-  onDepartmentChange,
-  onStatusChange,
-}: FiltersProps) {
+export default function Filters({ onSearch }: FiltersProps) {
   return (
     <div className="flex gap-4 ">
-      <Select onValueChange={onDepartmentChange}>
+      <Select onValueChange={onSearch}>
         <SelectTrigger className="w-[180px] bg-secondary text-secondary-foreground">
-          <SelectValue placeholder="All Departments" />
+          <SelectValue placeholder="Select Department" />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Departments</SelectItem>
-          <SelectItem value="engineering">Engineering</SelectItem>
-          <SelectItem value="marketing">Marketing</SelectItem>
-          <SelectItem value="sales">Sales</SelectItem>
+        <SelectContent className="bg-background text-foreground">
+          {departments.map((department) => (
+            <SelectItem key={department} value={department}>
+              {department}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
-      <Select onValueChange={onStatusChange}>
+      <Select onValueChange={onSearch}>
         <SelectTrigger className="w-[180px] bg-secondary text-secondary-foreground">
           <SelectValue placeholder="All Status" />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Status</SelectItem>
+        <SelectContent className="bg-background text-foreground">
           <SelectItem value="active">Active</SelectItem>
           <SelectItem value="inactive">Inactive</SelectItem>
         </SelectContent>

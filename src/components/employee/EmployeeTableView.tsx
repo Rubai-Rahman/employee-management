@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Table,
   TableBody,
@@ -21,11 +21,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Pencil, Trash2, User } from 'lucide-react';
-import { deleteEmployeeById, fetchEmployees } from '@/services/employeeService';
-import { ErrorResultMessage } from '../ui/data-result-message';
-import { Employee } from '@/types/employee';
-import TableSkeleton from './TableSkeleton';
+import { deleteEmployeeById } from '@/services/employeeService';
 import { toast } from 'sonner';
+
 import {
   Dialog,
   DialogContent,
@@ -33,27 +31,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import { Employee } from '@/types/employee';
 
 const ITEMS_PER_PAGE = 10;
 
 export default function EmployeeTableView({
   onEdit,
+  employeesData,
 }: {
   onEdit: (id: number) => void;
+  employeesData: Employee[];
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [deletingEmployeeId, setDeletingEmployeeId] = useState<
     number | undefined
   >();
   const qc = useQueryClient();
-  const {
-    data: employeesData,
-    error,
-    isPending,
-  } = useQuery({
-    queryKey: ['employees'],
-    queryFn: fetchEmployees,
-  });
+
   const { mutate: deleteEmployee, isPending: deleting } = useMutation({
     mutationKey: ['employees_delete'],
     mutationFn: deleteEmployeeById,
@@ -65,7 +59,7 @@ export default function EmployeeTableView({
     },
   });
   const employees = useMemo(() => {
-    return employeesData?.data ?? [];
+    return employeesData ?? [];
   }, [employeesData]);
 
   const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
@@ -86,9 +80,6 @@ export default function EmployeeTableView({
   const getInitials = useCallback((firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   }, []);
-
-  if (isPending) return <TableSkeleton />;
-  if (error) return <ErrorResultMessage message={error.message} />;
 
   return (
     <div className="space-y-4">

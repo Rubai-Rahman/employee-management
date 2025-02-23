@@ -2,11 +2,12 @@
 
 import { EmployeeFormDialog } from '@/components/employee/EmployeeFormDialog';
 import EmployeeTableView from '@/components/employee/EmployeeTableView';
+import TableSkeleton from '@/components/employee/TableSkeleton';
 import Filters from '@/components/shared/Filters';
 import SearchBar from '@/components/shared/SearchBar';
 import { Button } from '@/components/ui/button';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
-import { fetchEmployee } from '@/services/employeeService';
+import { fetchEmployee, fetchEmployees } from '@/services/employeeService';
 import { Employee } from '@/types/employee';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
@@ -16,11 +17,22 @@ export default function TableViewPage() {
   const [mutationType, setMutationType] = useState('');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [defaultValues, setDefaultValues] = useState<Employee>();
+  const [searchValue, setSearchValue] = useState('');
+  const [filterValue, setFilterValue] = useState('');
 
-  const { data: employeeData, isError } = useQuery({
+  const { data: employeeData } = useQuery({
     queryKey: ['employee', selectedId],
     queryFn: () => fetchEmployee(selectedId as number),
     enabled: selectedId !== null,
+    select: (data) => data.data,
+  });
+  const {
+    data: employeesData,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ['employees'],
+    queryFn: fetchEmployees,
     select: (data) => data.data,
   });
 
@@ -31,9 +43,8 @@ export default function TableViewPage() {
     }
   }, [employeeData, selectedId]);
 
-  if (isError) {
-    return <ErrorResultMessage />;
-  }
+  if (isPending) return <TableSkeleton />;
+  if (error) return <ErrorResultMessage message={error.message} />;
 
   const handleAddEmployee = () => {
     setDefaultValues({
@@ -53,12 +64,18 @@ export default function TableViewPage() {
   const handleEditEmployee = (id: number) => {
     setSelectedId(id);
   };
-
+  const handleFilterEmployee = (value: string) => {
+    setFilterValue(value);
+  };
+  const handleSearchEmployee = (value: string) => {
+    setSearchValue(value);
+  };
+  console.log('SearchValue', searchValue, filterValue);
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <SearchBar />
-        <Filters />
+        <SearchBar onSearch={handleSearchEmployee} value={searchValue} />
+        <Filters onSearch={handleFilterEmployee} />
       </div>
 
       <div>
@@ -72,7 +89,10 @@ export default function TableViewPage() {
         type={mutationType}
       />
 
-      <EmployeeTableView onEdit={handleEditEmployee} />
+      <EmployeeTableView
+        onEdit={handleEditEmployee}
+        employeesData={employeesData}
+      />
     </div>
   );
 }
