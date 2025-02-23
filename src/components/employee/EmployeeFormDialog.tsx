@@ -89,7 +89,7 @@ export function EmployeeFormDialog({
         <DialogContent className="sm:max-w-[600px] p-6  rounded-lg shadow-lg">
           <DialogHeader className="mb-4">
             <DialogTitle className="text-2xl font-bold">
-              {defaultValues ? 'Edit Employee' : 'Add New Employee'}
+              {defaultValues?.email ? 'Edit Employee' : 'Add New Employee'}
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>

@@ -7,14 +7,15 @@ import SearchBar from '@/components/shared/SearchBar';
 import { Button } from '@/components/ui/button';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { fetchEmployee } from '@/services/employeeService';
+import { Employee } from '@/types/employee';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function TableViewPage() {
   const [openForm, setOpenForm] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [defaultValues, setDefaultValues] = useState<Employee>();
 
-  // Only fetch the employee when an id is selected.
   const { data: employeeData, isError } = useQuery({
     queryKey: ['employee', selectedId],
     queryFn: () => fetchEmployee(selectedId as number),
@@ -22,17 +23,34 @@ export default function TableViewPage() {
     select: (data) => data.data,
   });
 
+  useEffect(() => {
+    if (employeeData && selectedId !== null) {
+      setDefaultValues(employeeData);
+      setOpenForm(true); // Open form only after data is available
+    }
+  }, [employeeData, selectedId]);
+
   if (isError) {
     return <ErrorResultMessage />;
   }
 
   const handleAddEmployee = () => {
-    // Reset selectedId to ensure no default values are loaded.
+    setDefaultValues({
+      employeeId: 0,
+      fullName: { firstName: '', lastName: '' },
+      phone: '',
+      email: '',
+      address: { street: '', city: '', country: '' },
+      department: '',
+      status: 'active',
+    });
     setSelectedId(null);
     setOpenForm(true);
   };
 
-  console.log('singleEmployeeData', employeeData);
+  const handleEditEmployee = (id: number) => {
+    setSelectedId(id);
+  };
 
   return (
     <div className="space-y-6">
@@ -40,16 +58,18 @@ export default function TableViewPage() {
         <SearchBar />
         <Filters />
       </div>
+
       <div>
         <Button onClick={handleAddEmployee}>Add New Employee</Button>
       </div>
+
       <EmployeeFormDialog
         open={openForm}
         setOpen={setOpenForm}
-        // If no employee is selected (adding new), pass undefined to trigger empty form defaults.
-        defaultValues={selectedId !== null ? employeeData : undefined}
+        defaultValues={defaultValues}
       />
-      <EmployeeTableView setId={setSelectedId} setOpenForm={setOpenForm} />
+
+      <EmployeeTableView onEdit={handleEditEmployee} />
     </div>
   );
 }

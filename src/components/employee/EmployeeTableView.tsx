@@ -26,17 +26,13 @@ import { ErrorResultMessage } from '../ui/data-result-message';
 import { Employee } from '@/types/employee';
 import TableSkeleton from './TableSkeleton';
 
-interface EmployeeTableViewProps {
-  setId: (id: number | null) => void;
-  setOpenForm: (open: boolean) => void;
-}
-
 const ITEMS_PER_PAGE = 10;
 
 export default function EmployeeTableView({
-  setId,
-  setOpenForm,
-}: EmployeeTableViewProps) {
+  onEdit,
+}: {
+  onEdit: (id: number) => void;
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -51,27 +47,17 @@ export default function EmployeeTableView({
   const employees: Employee[] = employeesData?.data ?? [];
   const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
 
-  // Memoize paginated data based on the current page
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return employees.slice(start, start + ITEMS_PER_PAGE);
   }, [employees, currentPage]);
 
-  // useCallback for stable function references
   const handlePageChange = useCallback(
     (page: number) => {
       const newPage = Math.max(1, Math.min(page, totalPages));
       setCurrentPage(newPage);
     },
     [totalPages]
-  );
-
-  const handleEdit = useCallback(
-    (id: number | null) => {
-      setId(id);
-      setOpenForm(true);
-    },
-    [setId, setOpenForm]
   );
 
   const getInitials = useCallback((firstName: string, lastName: string) => {
@@ -122,7 +108,7 @@ export default function EmployeeTableView({
                   <TableCell>
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleEdit(employee.employeeId)}
+                        onClick={() => onEdit(employee?.employeeId ?? null)}
                         variant="ghost"
                         size="icon"
                         className="hover:text-primary"
