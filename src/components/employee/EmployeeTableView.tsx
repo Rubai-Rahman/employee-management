@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Table,
   TableBody,
@@ -21,10 +21,18 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Pencil, Trash2, User } from 'lucide-react';
-import { fetchEmployees } from '@/services/employeeService';
+import { deleteEmployeeById, fetchEmployees } from '@/services/employeeService';
 import { ErrorResultMessage } from '../ui/data-result-message';
 import { Employee } from '@/types/employee';
 import TableSkeleton from './TableSkeleton';
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -34,7 +42,10 @@ export default function EmployeeTableView({
   onEdit: (id: number) => void;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [deletingEmployeeId, setDeletingEmployeeId] = useState<
+    number | undefined
+  >();
+  const qc = useQueryClient();
   const {
     data: employeesData,
     error,
@@ -43,8 +54,20 @@ export default function EmployeeTableView({
     queryKey: ['employees'],
     queryFn: fetchEmployees,
   });
+  const { mutate: deleteEmployee, isPending: deleting } = useMutation({
+    mutationKey: ['employees_delete'],
+    mutationFn: deleteEmployeeById,
+    onSuccess: () => toast.success('Employee deleted successfully'),
+    onError: () => toast.error('Employee deletion failed'),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['employees'] });
+      setDeletingEmployeeId(undefined);
+    },
+  });
+  const employees = useMemo(() => {
+    return employeesData?.data ?? [];
+  }, [employeesData]);
 
-  const employees: Employee[] = employeesData?.data ?? [];
   const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
 
   const paginatedData = useMemo(() => {
@@ -116,6 +139,9 @@ export default function EmployeeTableView({
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
+                        onClick={() =>
+                          setDeletingEmployeeId(employee.employeeId)
+                        }
                         variant="ghost"
                         size="icon"
                         className="text-destructive/60 hover:text-destructive"
@@ -130,7 +156,28 @@ export default function EmployeeTableView({
           </TableBody>
         </Table>
       </div>
-
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={Boolean(deletingEmployeeId)}
+        onOpenChange={() => setDeletingEmployeeId(undefined)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure you want to delete?</DialogTitle>
+          </DialogHeader>
+          <p>This action cannot be undone.</p>
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => deleteEmployee(deletingEmployeeId!)}
+              disabled={deleting}
+            >
+              {deleting ? 'Deleting...' : 'Confirm'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {totalPages > 1 && (
         <Pagination>
           <PaginationContent>

@@ -20,7 +20,7 @@ import {
 import { toast } from 'sonner';
 
 export default function EmployeeCardView() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const [deletingEmployeeId, setDeletingEmployeeId] = useState<
     number | undefined
   >();
@@ -43,7 +43,7 @@ export default function EmployeeCardView() {
     onSuccess: () => toast.success('Employee deleted successfully'),
     onError: () => toast.error('Employee deletion failed'),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['employees'] });
+      qc.invalidateQueries({ queryKey: ['employees'] });
       setDeletingEmployeeId(undefined);
     },
   });
