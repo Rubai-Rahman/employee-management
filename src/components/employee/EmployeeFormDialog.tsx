@@ -87,7 +87,6 @@ export function EmployeeFormDialog({
     onError: (error: any) => {
       console.log('error', error);
       if (error.response?.status === 400) {
-        // This is the expected error for existing employee
         toast.error(error.response.data.message || 'Employee creation failed');
       } else {
         toast.error(
