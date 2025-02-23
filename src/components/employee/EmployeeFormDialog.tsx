@@ -41,7 +41,7 @@ const departments = [
 ];
 // Zod schema for form validation
 const employeeFormSchema = z.object({
-  employeeId: z.number().optional(),
+  employeeId: z.number().gt(0, { message: 'Value must be greter than 0' }),
   fullName: z.object({
     firstName: z.string().min(2, 'First name must be at least 2 characters'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters'),
