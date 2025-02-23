@@ -28,7 +28,17 @@ import {
 } from '@/components/ui/select';
 import { Employee } from '@/types/employee';
 import { useEffect } from 'react';
+import { ImageUpload } from './Image-upload';
 
+const departments = [
+  'Human Resources',
+  'Marketing',
+  'Sales',
+  'Engineering',
+  'Finance',
+  'Operations',
+  'Customer Support',
+];
 // Zod schema for form validation
 const employeeFormSchema = z.object({
   employeeId: z.number().optional(),
@@ -84,106 +94,69 @@ export function EmployeeFormDialog({
   }
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[600px] p-6  rounded-lg shadow-lg">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-2xl font-bold">
-              {defaultValues?.email ? 'Edit Employee' : 'Add New Employee'}
-            </DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Full Name Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="fullName.firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        First Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="First Name"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="fullName.lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Last Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Last Name"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[700px] p-6 rounded-lg shadow-lg">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-2xl font-bold">
+            {defaultValues?.email ? 'Edit Employee' : 'Add New Employee'}
+          </DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 max-h-[500px] px-2 overflow-y-auto scroll-m-2"
+          >
+            {/* Profile Picture Upload */}
+            <FormField
+              control={form.control}
+              name="profilePicture"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">
+                    Profile Picture
+                  </FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Contact Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Phone</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Phone number"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          {...field}
-                          placeholder="Email address"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            {/* Employee ID Field */}
+            <FormField
+              control={form.control}
+              name="employeeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">Employee ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Employee ID"
+                      className="border rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Address Fields */}
+            {/* Full Name Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
-                name="address.street"
+                name="fullName.firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Street</FormLabel>
+                    <FormLabel className="font-semibold">First Name</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Street"
+                        placeholder="First Name"
                         className="border rounded-md"
                       />
                     </FormControl>
@@ -191,107 +164,190 @@ export function EmployeeFormDialog({
                   </FormItem>
                 )}
               />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="address.city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">City</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="City"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address.country"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Country</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Country"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="fullName.lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Last Name"
+                        className="border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {/* Department and Status Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="department"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        Department
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Department"
-                          className="border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Status</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="border rounded-md">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            {/* Contact Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Phone number"
+                        className="border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        {...field}
+                        placeholder="Email address"
+                        className="border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-between space-x-4 pt-4 border-t border-gray-200">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {defaultValues?.employeeId ? 'Update' : 'Create '}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </>
+            {/* Address Fields */}
+            <FormField
+              control={form.control}
+              name="address.street"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">Street</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Street"
+                      className="border rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="address.city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">City</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="City"
+                        className="border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address.country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Country</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Country"
+                        className="border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Department and Status Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="department"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Department</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="border rounded-md">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-background text-foreground">
+                        {departments.map((dept) => (
+                          <SelectItem key={dept} value={dept}>
+                            {dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="border rounded-md">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-between space-x-4 pt-4 border-t border-gray-200">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">
+                {defaultValues?.employeeId ? 'Update' : 'Create'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
