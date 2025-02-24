@@ -89,7 +89,11 @@ export function EmployeeFormDialog({
     onError: (error: any) => {
       console.log('error', error);
       if (error.response?.status === 400) {
-        toast.error(error.response.data.message || 'Employee creation failed');
+        toast.error(
+          error.response.data.message ||
+            error.message ||
+            'Employee creation failed'
+        );
       } else {
         toast.error(
           error.response.data.message || 'An unexpected error occurred'
